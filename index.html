@@ -6,7 +6,7 @@
 <title>Programa Saturno · Aprendizajes del ciclo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;600&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;600&family=Newsreader:ital,wght@0,400;0,500;0,700;1,400&display=swap">
 <style>
 :root{--bg:#F0EEE6;--card:#FBFAF6;--fg:#26302A;--mute:#6B7A6F;--line:#DEDDD2;--green:#3A6B2A;--leaf:#5A9A3C;--gold:#9A7B2F;--sel:#E8EFDF;--bad:#A3361A;--serif:'Newsreader',Georgia,serif;--sans:'Hanken Grotesk',system-ui,Arial,sans-serif;color-scheme:light}
 *{box-sizing:border-box}
@@ -30,7 +30,7 @@ input[type=text]:focus,textarea:focus{border-color:var(--green);outline:none}
 textarea{min-height:150px;resize:vertical}
 .row{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
 .row textarea{width:100%}
-.mic{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:16px;font-weight:600;color:var(--green);background:transparent;border:1.5px solid var(--green);border-radius:12px;padding:10px 16px;cursor:pointer}
+.mic{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:16px;font-weight:600;color:#fff;background:var(--green);border:1.5px solid var(--green);border-radius:12px;padding:12px 20px;cursor:pointer}
 .mic.on{background:var(--bad);border-color:var(--bad);color:#fff}
 .mic svg{width:18px;height:18px;fill:currentColor}
 .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -124,7 +124,7 @@ function steps() {
   s.push({k: 'reconocer', tipo: 'largo', t: '¿A quién reconocerías y por qué?', h: 'Alguien cuyo aporte te ayudó a ti y al equipo este ciclo. Escribe su nombre y qué hizo.'});
   if (a === 'operativo') {
     s.push({k: 'op_programa', tipo: 'largo', t: '¿Qué es el programa Saturno en tus propias palabras?'});
-    s.push({k: 'op_rol', tipo: 'texto', t: '¿Cuál es tu rol?', ph: 'Tu cargo o función'});
+    s.push({k: 'op_rol', tipo: 'largo', t: '¿Cómo le explicarías a alguien tu rol y responsabilidades como técnico?'});
   }
   return s;
 }
@@ -185,7 +185,9 @@ function render() {
     st.appendChild(el('p', 'big', 'Son pocas preguntas y toman menos de 5 minutos. Con tus respuestas preparamos la sesión de aprendizajes.'));
     st.appendChild(el('p', 'hint', 'Lo que escribes se guarda solo: puedes cerrar y seguir después desde este mismo dispositivo.'));
   } else {
-    st.appendChild(el('h1', '', p.t));
+    var h = el('h1', '', p.t);
+    if (p.tipo === 'nps') { var q = p.t.split(nombreFase(p.fase)); h.textContent = q[0]; h.appendChild(el('strong', '', nombreFase(p.fase))); h.appendChild(document.createTextNode(q[1] || '')); }
+    st.appendChild(h);
     if (p.h) st.appendChild(el('p', 'hint', p.h));
     if (p.tipo === 'texto') {
       var i = el('input'); i.type = 'text'; i.value = state[p.k] || ''; i.placeholder = p.ph || '';
@@ -200,7 +202,7 @@ function render() {
       }
       var caja = el('div', 'row'), ta = el('textarea'); ta.value = state[p.k] || '';
       ta.addEventListener('input', function () { state[p.k] = ta.value; touch(); actualizarBoton(); });
-      caja.appendChild(ta); dictado(ta, caja); st.appendChild(caja);
+      dictado(ta, caja); caja.appendChild(ta); st.appendChild(caja);
     } else if (p.tipo === 'area' || p.tipo === 'fase') {
       var opts = p.tipo === 'area' ? AREAS : FASES.map(function (f) { return [f, f]; });
       var g = el('div', 'choices' + (p.tipo === 'fase' ? ' one' : ''));
@@ -216,7 +218,7 @@ function render() {
       st.appendChild(g);
     } else if (p.tipo === 'nps') {
       var lista = PROCESOS_FASE[state.area][p.fase];
-      var d = el('details'); d.appendChild(el('summary', '', 'Ver los procesos de tu área en esta fase'));
+      var d = el('details'); d.appendChild(el('summary', '', '¿Cuáles procesos realizaste en esta fase?'));
       d.appendChild(el('p', '', lista.length ? lista.join('; ') + '.' : 'Tu área no tiene procesos propios en esta fase. Califica los procesos del programa que viste en ella.'));
       st.appendChild(d);
       var sc = el('div', 'scale');
