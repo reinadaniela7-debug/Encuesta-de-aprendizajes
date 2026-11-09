@@ -143,23 +143,36 @@ var activo = null;
 function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt !== undefined) e.textContent = txt; return e; }
 
 function dictado(ta, caja) {
-  if (!SR) return;
-  var b = el('button', 'mic'); b.type = 'button'; b.innerHTML = MIC + '<span>Dictar</span>';
-  b.addEventListener('click', function () {
-    if (activo) { activo.rec.stop(); if (activo.btn === b) return; }
-    var rec = new SR(); rec.lang = 'es-VE'; rec.continuous = true; rec.interimResults = false;
+  var b = el('button', 'mic'); b.type = 'button';
+  var aviso = el('p', 'hint');
+  var quiere = false, rec = null;
+  function ui(on) { b.classList.toggle('on', on); b.innerHTML = MIC + '<span>' + (on ? 'Detener' : 'Dictar con micrófono') + '</span>'; }
+  function parar() { quiere = false; ui(false); if (rec) { var r = rec; rec = null; try { r.abort(); } catch (e) {} } if (activo && activo.btn === b) activo = null; }
+  function arrancar() {
+    rec = new SR(); rec.lang = 'es-VE'; rec.continuous = false; rec.interimResults = false;
     rec.onresult = function (e) {
       var t = '';
       for (var i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) t += e.results[i][0].transcript;
       if (t) { ta.value = (ta.value ? ta.value.replace(/\s+$/, '') + ' ' : '') + t.trim(); ta.dispatchEvent(new Event('input')); }
     };
-    rec.onend = function () { b.classList.remove('on'); b.querySelector('span').textContent = 'Dictar'; if (activo && activo.btn === b) activo = null; };
-    rec.onerror = function () { rec.stop(); };
-    activo = {rec: rec, btn: b};
-    b.classList.add('on'); b.querySelector('span').textContent = 'Detener';
-    try { rec.start(); } catch (err) {}
-  });
-  caja.appendChild(b);
+    rec.onerror = function (e) {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { aviso.textContent = 'No hay permiso para el micrófono. Actívalo en el candado junto a la dirección, o usa el micrófono de tu teclado.'; parar(); }
+    };
+    rec.onend = function () { if (quiere) { setTimeout(function () { if (quiere) { try { arrancar(); } catch (e) { parar(); } } }, 150); } };
+    try { rec.start(); } catch (e) { parar(); }
+  }
+  ui(false);
+  if (SR) {
+    b.addEventListener('click', function () {
+      if (quiere) { parar(); return; }
+      if (activo) activo.parar();
+      aviso.textContent = ''; quiere = true; activo = {btn: b, parar: parar}; ui(true); arrancar();
+    });
+    caja.appendChild(b);
+  }
+  aviso.textContent = SR ? '' : '';
+  var tip = el('p', 'hint', 'También puedes tocar el micrófono del teclado de tu teléfono para hablar en vez de escribir.');
+  return [tip, aviso];
 }
 
 function irSiguienteSoft(paso) {
@@ -167,7 +180,7 @@ function irSiguienteSoft(paso) {
 }
 
 function render() {
-  if (activo) { try { activo.rec.stop(); } catch (e) {} activo = null; }
+  if (activo) { try { activo.parar(); } catch (e) {} activo = null; }
   var S = steps();
   if (state.step >= S.length) state.step = S.length - 1;
   var p = S[state.step], st = $('stage');
@@ -202,7 +215,7 @@ function render() {
       }
       var caja = el('div', 'row'), ta = el('textarea'); ta.value = state[p.k] || '';
       ta.addEventListener('input', function () { state[p.k] = ta.value; touch(); actualizarBoton(); });
-      dictado(ta, caja); caja.appendChild(ta); st.appendChild(caja);
+      var ex = dictado(ta, caja); caja.appendChild(ta); ex.forEach(function (x) { caja.appendChild(x); }); st.appendChild(caja);
     } else if (p.tipo === 'area' || p.tipo === 'fase') {
       var opts = p.tipo === 'area' ? AREAS : FASES.map(function (f) { return [f, f]; });
       var g = el('div', 'choices' + (p.tipo === 'fase' ? ' one' : ''));
