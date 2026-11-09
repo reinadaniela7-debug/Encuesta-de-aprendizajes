@@ -28,6 +28,7 @@ h1{font-family:var(--serif);font-weight:400;font-size:clamp(28px,5vw,38px);line-
 input[type=text],textarea{width:100%;font:inherit;font-size:19px;color:var(--fg);background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:16px}
 input[type=text]:focus,textarea:focus{border-color:var(--green);outline:none}
 textarea{min-height:150px;resize:vertical}
+.porque{display:flex;flex-direction:column;gap:18px}.porque .sub{display:flex;flex-direction:column;gap:8px}.porque textarea{min-height:90px}.pl{font-weight:600;font-size:17px}
 .row{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
 .row textarea{width:100%}
 .mic{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:16px;font-weight:600;color:#fff;background:var(--green);border:1.5px solid var(--green);border-radius:12px;padding:12px 20px;cursor:pointer}
@@ -84,6 +85,17 @@ var AREAS = [['administrativo', 'Administrativo'], ['operativo', 'Operativo'], [
 var FASES = ['Planificación', 'Siembra', 'Cosecha'];
 var NPS_KEYS = {'Planificación': 'nps_planificacion', 'Siembra': 'nps_siembra', 'Cosecha': 'nps_cosecha'};
 
+/* Operativo, Siembra: cuatro procesos resumidos, iguales en el recordatorio y en la selección */
+(function () {
+  var S = ['Calibración de sembradora', 'Ejecución del plan agronómico', 'Manejo del inventario', 'Rutinas de monitoreo'];
+  PROCESOS_FASE.operativo['Siembra'] = S;
+  var L = PROCESOS.operativo, pos = -1, out = [];
+  L.forEach(function (x) { if (x.indexOf('Siembra · ') === 0) { if (pos < 0) pos = out.length; } else out.push(x); });
+  if (pos < 0) pos = out.length;
+  out.splice.apply(out, [pos, 0].concat(S.map(function (n) { return 'Siembra · ' + n; })));
+  PROCESOS.operativo = out;
+})();
+
 /* ===== Estado y guardado automático ===== */
 var state = {id: '', estado: 'borrador', step: 0};
 var $ = function (id) { return document.getElementById(id); };
@@ -114,9 +126,9 @@ function steps() {
   if (!a) return s;
   FASES.forEach(function (f) { s.push({k: NPS_KEYS[f], tipo: 'nps', fase: f, t: '¿Recomendarías a otros proyectos el proceso de ' + nombreFase(f) + ' que ejecutaste este ciclo?'}); });
   s.push({k: 'bien', tipo: 'multi', t: '¿Cuáles 3 procesos funcionaron mejor?'});
-  s.push({k: 'porque_bien', tipo: 'largo', t: '¿Por qué funcionaron bien?', ctx: 'bien'});
+  s.push({k: 'porque_bien', tipo: 'porque', t: '¿Por qué funcionaron bien?', h: 'Cuéntanos en una o dos líneas por cada proceso.', ctx: 'bien'});
   s.push({k: 'mal', tipo: 'multi', t: '¿Cuáles 3 procesos tuvieron más problemas?'});
-  s.push({k: 'porque_mal', tipo: 'largo', t: '¿Qué pasó?', ctx: 'mal'});
+  s.push({k: 'porque_mal', tipo: 'porque', t: '¿Qué pasó?', h: 'Cuéntanos en una o dos líneas por cada proceso.', ctx: 'mal'});
   s.push({k: 'reto', tipo: 'largo', t: '¿Cuál fue el mayor reto del ciclo?'});
   s.push({k: 'reto_fase', tipo: 'fase', t: '¿En qué fase ocurrió ese reto?'});
   s.push({k: 'reto_solucion', tipo: 'largo', t: '¿Cómo lo resolviste?', h: 'Si no lo resolviste, cuéntanos qué crees que podríamos hacer para mejorarlo el próximo año.'});
@@ -132,6 +144,7 @@ function valido(p) {
   var v = state[p.k];
   if (p.tipo === 'intro') return true;
   if (p.tipo === 'multi') return (v || []).length >= 1;
+  if (p.tipo === 'porque') { var ch = state[p.ctx] || [], dt = (state.det || {})[p.k] || {}; return ch.length > 0 && ch.every(function (x) { return (dt[x] || '').trim(); }); }
   if (p.tipo === 'nps') return v !== undefined && v !== '';
   return !!(v && String(v).trim());
 }
@@ -186,6 +199,21 @@ function render() {
       var caja = el('div', 'row'), ta = el('textarea'); ta.value = state[p.k] || '';
       ta.addEventListener('input', function () { state[p.k] = ta.value; touch(); actualizarBoton(); });
       var ex = dictado(); caja.appendChild(ta); ex.forEach(function (x) { caja.appendChild(x); }); st.appendChild(caja);
+    } else if (p.tipo === 'porque') {
+      state.det = state.det || {}; state.det[p.k] = state.det[p.k] || {};
+      var caja2 = el('div', 'porque');
+      (state[p.ctx] || []).forEach(function (lab) {
+        var g2 = el('div', 'sub'), tx = el('textarea');
+        g2.appendChild(el('label', 'pl', lab.split(' · ').slice(1).join(' · ')));
+        tx.value = state.det[p.k][lab] || '';
+        tx.addEventListener('input', function () {
+          state.det[p.k][lab] = tx.value;
+          state[p.k] = (state[p.ctx] || []).map(function (x) { return x.split(' · ').slice(1).join(' · ') + ': ' + (state.det[p.k][x] || '').trim(); }).join('\n');
+          touch(); actualizarBoton();
+        });
+        g2.appendChild(tx); caja2.appendChild(g2);
+      });
+      st.appendChild(caja2);
     } else if (p.tipo === 'area' || p.tipo === 'fase') {
       var opts = p.tipo === 'area' ? AREAS : FASES.map(function (f) { return [f, f]; });
       var g = el('div', 'choices' + (p.tipo === 'fase' ? ' one' : ''));
@@ -201,7 +229,7 @@ function render() {
       st.appendChild(g);
     } else if (p.tipo === 'nps') {
       var lista = PROCESOS_FASE[state.area][p.fase];
-      var d = el('details'); d.appendChild(el('summary', '', '¿Cuáles procesos realizaste en esta fase?'));
+      var d = el('details'); d.open = true; d.appendChild(el('summary', '', '¿Cuáles procesos realizaste en esta fase?'));
       d.appendChild(el('p', '', lista.length ? lista.join('; ') + '.' : 'Tu área no tiene procesos propios en esta fase. Califica los procesos del programa que viste en ella.'));
       st.appendChild(d);
       var sc = el('div', 'scale');
