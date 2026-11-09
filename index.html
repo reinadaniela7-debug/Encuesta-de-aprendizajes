@@ -166,7 +166,16 @@ function dictado(ta, caja) {
     b.addEventListener('click', function () {
       if (quiere) { parar(); return; }
       if (activo) activo.parar();
-      aviso.textContent = ''; quiere = true; activo = {btn: b, parar: parar}; ui(true); arrancar();
+      aviso.textContent = ''; quiere = true; activo = {btn: b, parar: parar}; ui(true);
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({audio: true}).then(function (s) {
+          s.getTracks().forEach(function (x) { x.stop(); });
+          if (quiere) arrancar();
+        }).catch(function () {
+          aviso.textContent = 'Para dictar necesitas permitir el micrófono. Toca el candado junto a la dirección, activa "Micrófono" y vuelve a intentarlo; o usa el micrófono de tu teclado.';
+          parar();
+        });
+      } else arrancar();
     });
     caja.appendChild(b);
   }
