@@ -124,6 +124,7 @@ function steps() {
   s.push({k: 'nombre', tipo: 'texto', t: '¿Cómo te llamas?', ph: 'Nombre y apellido'});
   s.push({k: 'area', tipo: 'area', t: '¿En qué área trabajas?'});
   if (!a) return s;
+  s.push({k: 'nps_intro', tipo: 'info', t: 'Imagina este escenario', h: 'Un amigo tuyo está abriendo un proyecto nuevo, parecido a este. A continuación te preguntamos si le recomendarías cómo se ejecutó cada etapa este ciclo: planificación, siembra y cosecha. 0 es que no la recomendarías y 10 es que sí.'});
   FASES.forEach(function (f) { s.push({k: NPS_KEYS[f], tipo: 'nps', fase: f, t: '¿Recomendarías a otros proyectos el proceso de ' + nombreFase(f) + ' que ejecutaste este ciclo?'}); });
   s.push({k: 'bien', tipo: 'multi', t: '¿Cuáles 3 procesos funcionaron mejor?'});
   s.push({k: 'porque_bien', tipo: 'porque', t: '¿Por qué funcionaron bien?', h: 'Cuéntanos en una o dos líneas por cada proceso.', ctx: 'bien'});
@@ -142,7 +143,7 @@ function steps() {
 }
 function valido(p) {
   var v = state[p.k];
-  if (p.tipo === 'intro') return true;
+  if (p.tipo === 'intro' || p.tipo === 'info') return true;
   if (p.tipo === 'multi') return (v || []).length >= 1;
   if (p.tipo === 'porque') { var ch = state[p.ctx] || [], dt = (state.det || {})[p.k] || {}; return ch.length > 0 && ch.every(function (x) { return (dt[x] || '').trim(); }); }
   if (p.tipo === 'nps') return v !== undefined && v !== '';
@@ -169,7 +170,7 @@ function render() {
   var p = S[state.step], st = $('stage');
   st.innerHTML = '';
   var total = S.length - 1;
-  $('count').textContent = p.tipo === 'intro' ? '' : 'Pregunta ' + state.step + (state.area ? ' de ' + total : '');
+  $('count').textContent = (p.tipo === 'intro' || p.tipo === 'info') ? '' : 'Pregunta ' + state.step + (state.area ? ' de ' + total : '');
   $('bar').style.width = (state.area ? state.step / total * 100 : state.step * 4) + '%';
   $('back').style.visibility = state.step === 0 ? 'hidden' : 'visible';
   var ultimo = state.step === S.length - 1 && state.area;
