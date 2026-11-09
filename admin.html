@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Saturno · Resumen de respuestas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;600&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+:root{--bg:#F0EEE6;--panel:#F9F8F4;--fg:#26302A;--mute:#6B7A6F;--line:#DEDDD2;--green:#3A6B2A;--leaf:#5A9A3C;--gold:#9A7B2F;--sel:#E8EFDF;--bad:#A3361A;--mid:#B7A04A;--serif:'Newsreader',Georgia,serif;--sans:'Hanken Grotesk',system-ui,Arial,sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.5}
+.top{height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 24px;border-bottom:1px solid var(--line)}
+.brand{font-family:var(--serif);font-size:24px;font-weight:500}.brand b{color:var(--leaf);font-weight:500;font-style:italic}
+.top span{font-size:13px;color:var(--mute)}
+.wrap{max-width:1080px;margin:0 auto;padding:32px max(20px,env(safe-area-inset-left,0px)) 80px}
+h1{font-family:var(--serif);font-weight:400;font-size:34px;margin:0 0 6px}
+h2{font-family:var(--serif);font-weight:400;font-size:24px;margin:0 0 4px}
+h3{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
+.mute{color:var(--mute);font-size:14px;margin:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;min-width:0}
+.login{max-width:420px;margin:48px auto;display:flex;flex-direction:column;gap:12px}
+input[type=password],input[type=text],select{font:inherit;color:var(--fg);background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;width:100%}
+button{font:inherit;font-weight:600;background:var(--green);color:#fff;border:0;border-radius:10px;padding:12px 18px;cursor:pointer}
+button.ghost{background:transparent;color:var(--green);border:1px solid var(--green)}
+.msg{color:var(--bad);font-size:14px;margin:0;min-height:1.2em}
+.bar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;margin:20px 0}
+.bar label{display:flex;align-items:center;gap:8px;font-size:14px}
+.bar select{width:auto;padding:10px 12px}
+.grid{display:grid;gap:16px;margin-bottom:16px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:1fr 1fr}
+.nps{font-family:var(--serif);font-size:56px;line-height:1;margin:6px 0 10px}
+.nps.pos{color:var(--green)}.nps.neg{color:var(--bad)}
+.stack{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--line)}
+.stack i{display:block}
+.leg{display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.scroll{overflow-x:auto}
+.top5 div{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
+.top5 b{flex:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:14px;font-weight:400;background:#fff;color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+.chip.on{background:var(--green);color:#fff;border-color:var(--green)}
+.chip small{color:var(--mute);margin-left:4px}.chip.on small{color:#dfe9d8}
+.com{border-top:1px solid var(--line);padding:12px 0}
+.com p{margin:4px 0 0}
+.badge{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--green);background:var(--sel);border-radius:6px;padding:2px 8px;margin-right:6px}
+.badge.f{color:var(--gold);background:#F1EAD3}
+mark{background:#F1EAD3;color:inherit}
+.ask{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+@media (max-width:800px){.g3,.g2{grid-template-columns:1fr}.top{padding:0 16px}}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="top"><div class="brand">Programa <b>Saturno</b></div><span>Panel de administración</span></div>
+<div class="wrap">
+
+<section id="login" class="card login">
+<h2>Acceso de administración</h2>
+<p class="mute">Escribe la clave que definiste en Apps Script para ver el resumen.</p>
+<input type="password" id="clave" placeholder="Clave" autocomplete="current-password">
+<button id="entrar" type="button">Entrar</button>
+<p class="msg" id="loginMsg" role="alert"></p>
+</section>
+
+<section id="panel" hidden>
+<h1>Resumen de respuestas</h1>
+<p class="mute" id="meta"></p>
+<div class="bar">
+<label>Grupo <select id="fArea"><option value="">Todos los grupos</option><option value="administrativo">Administrativo</option><option value="operativo">Operativo</option><option value="procesos">Procesos</option><option value="conocimiento">Conocimiento</option></select></label>
+<label><input type="checkbox" id="fBorr"> Incluir borradores</label>
+<label><input type="checkbox" id="fNom"> Mostrar nombres</label>
+<button class="ghost" id="recargar" type="button">Actualizar</button>
+</div>
+
+<h3>NPS por fase</h3>
+<div class="grid g3" id="npsFases"></div>
+<div class="card scroll" style="margin-bottom:16px"><h3>NPS por grupo y fase</h3><table id="npsAreas"></table></div>
+
+<div class="grid g2">
+<div class="card"><h3>Procesos que mejor funcionaron</h3><div class="top5" id="topBien"></div></div>
+<div class="card"><h3>Procesos con más problemas</h3><div class="top5" id="topMal"></div></div>
+</div>
+
+<div class="card" style="margin-bottom:16px">
+<h3>Temas que más se repiten</h3>
+<p class="mute" style="margin-bottom:10px">Palabras que aparecen en los comentarios, por número de personas. Toca una para ver solo esos comentarios.</p>
+<div class="chips" id="temas"></div>
+</div>
+
+<div class="card" style="margin-bottom:16px">
+<h3>Resumen con IA</h3>
+<p class="mute" style="margin-bottom:10px">La página cuenta y agrupa sola, pero no redacta resúmenes. Copia los comentarios del filtro actual, con una instrucción lista, y pégalos en Claude para obtener los aprendizajes más importantes.</p>
+<div class="ask"><button id="copiar" type="button">Copiar comentarios para resumir</button><span class="mute" id="copiado"></span></div>
+</div>
+
+<div class="card"><h3>Comentarios <span id="filtroTema" class="mute"></span></h3><div id="comentarios"></div></div>
+</section>
+</div>
+
+<script>
+/* Dirección de la aplicación web de Apps Script (la misma de la encuesta) */
+var ENDPOINT = 'https://script.google.com/macros/s/AKfycbxrC2bJJF1R4AU1J7Dnn24GPOE48fG_GhP_DAYdBsw8vi17zhuflgdz21eUb3snNiycFA/exec';
+var AREAS = {administrativo: 'Administrativo', operativo: 'Operativo', procesos: 'Procesos', conocimiento: 'Conocimiento'};
+var FASES = [['nps_planificacion', 'Planificación'], ['nps_siembra', 'Siembra'], ['nps_cosecha', 'Cosecha']];
+var PREGUNTAS = [
+  ['porque_bien', 'Por qué funcionaron bien'],
+  ['porque_mal', 'Qué pasó donde hubo problemas'],
+  ['reto', 'Mayor reto del ciclo'],
+  ['reto_solucion', 'Cómo lo resolvió / qué mejorar'],
+  ['distinto', 'Qué haría distinto'],
+  ['reconocer', 'A quién reconoce y por qué'],
+  ['op_programa', 'Qué es Saturno (equipo operativo)']
+];
+var STOP = 'para como pero porque cuando donde desde hasta sobre entre este esta estos estas esto ese esa esos esas aquel muy mas menos tambien solo cada todo todos toda todas nada algo otro otra otros otras tiene tienen tener hacer hace hacen hecho hizo fue fueron sido ser estar esta estan estaba habia hay hubo sin con por los las del que una uno unos unas nos les sus mis tus nuestro nuestra nuestros nuestras ese eso puede pueden poder debe deben deberia bien mal ciclo programa saturno proceso procesos tuvo tuvieron reconozco reconocer reconoceria estuvo salio quiero queremos'.split(' ');
+
+var $ = function (id) { return document.getElementById(id); };
+var DATOS = [], tema = '';
+
+function sinTildes(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt !== undefined) e.textContent = txt; return e; }
+
+/* ===== Acceso y carga ===== */
+function cargar() {
+  var clave = sessionStorage.getItem('saturno_clave') || '';
+  $('loginMsg').textContent = '';
+  if (!ENDPOINT || ENDPOINT.indexOf('PEGA_') === 0) { $('loginMsg').textContent = 'Falta pegar la dirección de Apps Script en admin.html.'; return; }
+  fetch(ENDPOINT + '?accion=datos&clave=' + encodeURIComponent(clave))
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      if (j.error) { sessionStorage.removeItem('saturno_clave'); $('login').hidden = false; $('panel').hidden = true; $('loginMsg').textContent = j.error === 'clave' ? 'Clave incorrecta.' : 'No se pudo leer: ' + j.error; return; }
+      DATOS = j.datos || [];
+      $('login').hidden = true; $('panel').hidden = false;
+      pintar();
+    })
+    .catch(function () { $('loginMsg').textContent = 'No se pudo conectar. Revisa que la versión nueva del código esté implementada en Apps Script.'; });
+}
+$('entrar').addEventListener('click', function () {
+  var c = $('clave').value.trim();
+  if (!c) { $('loginMsg').textContent = 'Escribe la clave.'; return; }
+  sessionStorage.setItem('saturno_clave', c);
+  cargar();
+});
+$('clave').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('entrar').click(); });
+$('recargar').addEventListener('click', cargar);
+['fArea', 'fBorr', 'fNom'].forEach(function (id) { $(id).addEventListener('change', pintar); });
+
+/* ===== Cálculos ===== */
+function filtradas() {
+  var a = $('fArea').value, borr = $('fBorr').checked;
+  return DATOS.filter(function (d) { return (!a || d.area === a) && (borr || d.estado === 'completa'); });
+}
+function nps(vals) {
+  var n = vals.length; if (!n) return null;
+  var p = 0, d = 0, m = 0;
+  vals.forEach(function (v) { if (v >= 9) p++; else if (v >= 7) m++; else d++; });
+  return {n: n, p: p, m: m, d: d, nps: Math.round((p - d) / n * 100), media: vals.reduce(function (s, v) { return s + v; }, 0) / n};
+}
+function notas(filas, k) {
+  return filas.map(function (f) { return f[k]; }).filter(function (v) { return v !== '' && v !== null && v !== undefined && !isNaN(Number(v)); }).map(Number);
+}
+function conteo(filas, k) {
+  var c = {};
+  filas.forEach(function (f) {
+    var l = f[k]; if (!l) return;
+    (Array.isArray(l) ? l : String(l).split(' | ')).forEach(function (p) { if (p) c[p] = (c[p] || 0) + 1; });
+  });
+  return Object.keys(c).map(function (p) { return [p, c[p]]; }).sort(function (a, b) { return b[1] - a[1]; });
+}
+function comentarios(filas) {
+  var out = [];
+  filas.forEach(function (f) {
+    PREGUNTAS.forEach(function (q) {
+      var t = (f[q[0]] || '').toString().trim();
+      if (t) out.push({area: f.area, nombre: f.nombre, k: q[0], pregunta: q[1], texto: t, fase: q[0] === 'reto' ? f.reto_fase : ''});
+    });
+  });
+  return out;
+}
+function temasDe(coms) {
+  var por = {}, vistos = {};
+  coms.forEach(function (c, i) {
+    var seen = {};
+    (c.texto.toLowerCase().match(/[\p{L}]{4,}/gu) || []).forEach(function (w) {
+      var n = sinTildes(w);
+      if (STOP.indexOf(n) >= 0 || seen[n]) return;
+      seen[n] = 1;
+      var key = n; vistos[key] = vistos[key] || w;
+      por[key] = (por[key] || 0) + 1;
+    });
+  });
+  return Object.keys(por).filter(function (k) { return por[k] >= 2; }).map(function (k) { return [k, vistos[k], por[k]]; }).sort(function (a, b) { return b[2] - a[2]; }).slice(0, 24);
+}
+
+/* ===== Pintado ===== */
+function bloqueNps(titulo, r) {
+  var c = el('div', 'card');
+  c.appendChild(el('h3', '', titulo));
+  if (!r) { c.appendChild(el('p', 'mute', 'Sin respuestas todavía.')); return c; }
+  c.appendChild(el('div', 'nps ' + (r.nps > 0 ? 'pos' : r.nps < 0 ? 'neg' : ''), (r.nps > 0 ? '+' : '') + r.nps));
+  var s = el('div', 'stack');
+  [['d', 'var(--bad)'], ['m', 'var(--mid)'], ['p', 'var(--leaf)']].forEach(function (x) { var i = el('i'); i.style.width = (r[x[0]] / r.n * 100) + '%'; i.style.background = x[1]; s.appendChild(i); });
+  c.appendChild(s);
+  c.appendChild(el('div', 'leg', '')).innerHTML = '';
+  var l = c.lastChild; l.appendChild(el('span', '', r.d + ' detractores (0-6)')); l.appendChild(el('span', '', r.m + ' pasivos (7-8)')); l.appendChild(el('span', '', r.p + ' promotores (9-10)'));
+  c.appendChild(el('p', 'mute', 'Nota media ' + r.media.toFixed(1) + ' de 10 · ' + r.n + ' respuestas')).style.marginTop = '8px';
+  return c;
+}
+function pintar() {
+  var filas = filtradas(), mostrarNom = $('fNom').checked;
+  var comp = DATOS.filter(function (d) { return d.estado === 'completa'; }).length;
+  $('meta').textContent = filas.length + ' respuestas en el filtro · ' + comp + ' completas y ' + (DATOS.length - comp) + ' borradores en total';
+
+  var cont = $('npsFases'); cont.innerHTML = '';
+  FASES.forEach(function (f) { cont.appendChild(bloqueNps(f[1], nps(notas(filas, f[0])))); });
+
+  var t = $('npsAreas'); t.innerHTML = '';
+  var hd = el('tr'); ['Grupo'].concat(FASES.map(function (f) { return f[1]; })).concat(['Respuestas']).forEach(function (h) { hd.appendChild(el('th', '', h)); }); t.appendChild(hd);
+  var todas = filas;
+  Object.keys(AREAS).forEach(function (a) {
+    var fs = todas.filter(function (d) { return d.area === a; });
+    var tr = el('tr'); tr.appendChild(el('td', '', AREAS[a]));
+    FASES.forEach(function (f) { var r = nps(notas(fs, f[0])); tr.appendChild(el('td', '', r ? (r.nps > 0 ? '+' : '') + r.nps : '–')); });
+    tr.appendChild(el('td', '', String(fs.length))); t.appendChild(tr);
+  });
+
+  [['topBien', 'procesos_bien'], ['topMal', 'procesos_mal']].forEach(function (x) {
+    var box = $(x[0]); box.innerHTML = '';
+    var top = conteo(filas, x[1]).slice(0, 8);
+    if (!top.length) box.appendChild(el('p', 'mute', 'Sin datos.'));
+    top.forEach(function (p) { var d = el('div'); d.appendChild(el('span', '', p[0])); d.appendChild(el('b', '', String(p[1]))); box.appendChild(d); });
+  });
+
+  var coms = comentarios(filas);
+  var tm = temasDe(coms), tb = $('temas'); tb.innerHTML = '';
+  if (!tm.length) tb.appendChild(el('p', 'mute', 'Aún no hay suficientes comentarios para detectar temas.'));
+  tm.forEach(function (x) {
+    var b = el('button', 'chip' + (tema === x[0] ? ' on' : ''), x[1]); b.type = 'button';
+    b.appendChild(el('small', '', String(x[2])));
+    b.addEventListener('click', function () { tema = tema === x[0] ? '' : x[0]; pintar(); });
+    tb.appendChild(b);
+  });
+
+  var vis = tema ? coms.filter(function (c) { return sinTildes(c.texto).indexOf(tema) >= 0; }) : coms;
+  $('filtroTema').textContent = tema ? '· filtrando por "' + tema + '" (' + vis.length + ')' : '(' + vis.length + ')';
+  var cc = $('comentarios'); cc.innerHTML = '';
+  if (!vis.length) cc.appendChild(el('p', 'mute', 'No hay comentarios para este filtro.'));
+  PREGUNTAS.forEach(function (q) {
+    var lista = vis.filter(function (c) { return c.k === q[0]; });
+    if (!lista.length) return;
+    var h = el('h3', '', q[1] + ' (' + lista.length + ')'); h.style.marginTop = '18px'; cc.appendChild(h);
+    lista.forEach(function (c) {
+      var d = el('div', 'com');
+      var top = el('div'); top.appendChild(el('span', 'badge', AREAS[c.area] || c.area || 'Sin grupo'));
+      if (c.fase) top.appendChild(el('span', 'badge f', c.fase));
+      if (mostrarNom && c.nombre) top.appendChild(el('span', 'mute', c.nombre));
+      d.appendChild(top); d.appendChild(el('p', '', c.texto)); cc.appendChild(d);
+    });
+  });
+}
+
+/* ===== Copiar para resumir con IA ===== */
+$('copiar').addEventListener('click', function () {
+  var filas = filtradas(), coms = comentarios(filas), a = $('fArea').value;
+  var txt = 'Eres analista de aprendizajes. Estos son comentarios de una encuesta previa a la sesión de aprendizajes del Programa Saturno (agricultura, ciclo 2026). Cada comentario indica el grupo que lo escribió (' + (a ? AREAS[a] : 'todos los grupos') + ').\n' +
+    'Resume: 1) los 5 aprendizajes más importantes, 2) los temas que se repiten entre grupos, 3) dónde hay discrepancias entre grupos, 4) en qué debería enfocarse la conversación de la sesión. Cita el grupo de origen en cada punto.\n\n';
+  PREGUNTAS.forEach(function (q) {
+    var l = coms.filter(function (c) { return c.k === q[0]; });
+    if (!l.length) return;
+    txt += '## ' + q[1] + '\n';
+    l.forEach(function (c) { txt += '- [' + (AREAS[c.area] || c.area) + (c.fase ? ' · ' + c.fase : '') + '] ' + c.texto.replace(/\s+/g, ' ') + '\n'; });
+    txt += '\n';
+  });
+  var ok = function () { $('copiado').textContent = 'Copiado (' + coms.length + ' comentarios).'; };
+  var no = function () { $('copiado').textContent = 'No se pudo copiar automáticamente.'; };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok, no); else no();
+});
+
+if (sessionStorage.getItem('saturno_clave')) cargar();
+</script>
+</body>
+</html>
