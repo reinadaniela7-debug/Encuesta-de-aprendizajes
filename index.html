@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programa Saturno · Aprendizajes del ciclo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;600&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+:root{--bg:#F0EEE6;--panel:#F9F8F4;--fg:#26302A;--mute:#6B7A6F;--line:#DEDDD2;--green:#3A6B2A;--leaf:#5A9A3C;--gold:#9A7B2F;--sel:#E8EFDF;--bad:#A3361A;--ok:#3A6B2A;--serif:'Newsreader',Georgia,serif;--sans:'Hanken Grotesk',system-ui,Arial,sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.5}
+.top{height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 max(24px,env(safe-area-inset-left,0px)) 0 max(24px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
+.brand{font-family:var(--serif);font-size:24px;font-weight:500}
+.brand b{color:var(--leaf);font-weight:500;font-style:italic}
+.top span{font-size:13px;letter-spacing:.04em;color:var(--mute)}
+.split{display:grid;grid-template-columns:1.2fr 1fr;min-height:calc(100vh - 64px)}
+.hero{position:sticky;top:64px;align-self:start;height:calc(100vh - 64px);padding:0 56px;overflow:hidden;display:flex;align-items:center}
+.hero-in{position:relative;z-index:1;max-width:520px}
+.hero svg{position:absolute;right:-40px;bottom:-20px;width:420px;max-width:80%;color:#DDE3D2;pointer-events:none}
+.eyebrow{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 20px}
+.eyebrow.g{color:var(--green)}
+.eyebrow.g::before{content:"";width:28px;height:1px;background:var(--green)}
+.hero h2{font-family:var(--sans);font-weight:300;font-size:clamp(40px,5vw,60px);line-height:1.1;margin:0 0 20px;letter-spacing:-.01em}
+.hero h2 em{display:block;font-family:var(--serif);font-weight:400;color:var(--leaf)}
+.hero p{margin:0;color:var(--mute);max-width:380px}
+.panel{background:var(--panel);border-left:1px solid var(--line);position:relative;padding:56px 56px 120px}
+.panel::before{content:"";position:absolute;top:-1px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--leaf),transparent);opacity:.6}
+main{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font-family:var(--serif);font-weight:400;font-size:36px;line-height:1.15;margin:0 0 10px;text-wrap:balance}
+.lead{margin:0;color:var(--mute);font-size:15px}
+.q{display:flex;flex-direction:column;gap:12px;min-width:0;padding-bottom:28px;border-bottom:1px solid var(--line);border-radius:0}
+.q[hidden]{display:none}
+.q.err{border-bottom-color:var(--bad);box-shadow:0 1px 0 var(--bad)}
+.q h2{font-size:17px;margin:0;font-weight:600;line-height:1.35}
+.req{color:var(--bad)}
+.hint{font-size:14px;color:var(--mute);margin:0}
+.sub{display:flex;flex-direction:column;gap:8px}
+.sub>label,.sub>.lab{font-size:15px;font-weight:600}
+input[type=text],select,textarea{width:100%;font:inherit;color:var(--fg);background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 14px}
+input[type=text]::placeholder{color:var(--mute)}
+textarea{min-height:92px;resize:vertical}
+.row{display:flex;gap:8px;align-items:flex-start}
+.row textarea{flex:1;min-width:0}
+.mic{flex:none;display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:14px;font-weight:600;color:var(--green);background:transparent;border:1px solid var(--green);border-radius:10px;padding:10px 12px;cursor:pointer}
+.mic.on{background:var(--bad);border-color:var(--bad);color:#fff}
+.mic svg{width:16px;height:16px;fill:currentColor}
+.grp{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:12px 0 2px}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;background:#fff;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.opt:has(input:checked){background:var(--sel);border-color:var(--green)}
+.opt.off{opacity:.45;cursor:not-allowed}
+.opt input{margin-top:4px;accent-color:var(--green)}
+.scale{display:grid;grid-template-columns:repeat(11,1fr);gap:4px}
+.scale label{text-align:center;background:#fff;border:1px solid var(--line);border-radius:8px;padding:11px 0;cursor:pointer;font-size:15px}
+.scale label:has(input:checked){background:var(--green);color:#fff;border-color:var(--green)}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label:has(input:focus-visible){outline:2px solid var(--gold);outline-offset:2px}
+.ends{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--mute)}
+.procs{font-size:14px;color:var(--mute);margin:0}
+button.send{font:inherit;font-weight:600;font-size:17px;background:var(--green);color:#fff;border:0;border-radius:10px;padding:15px 20px;cursor:pointer}
+button.send:disabled{opacity:.6;cursor:default}
+.status{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);padding:10px 24px calc(10px + env(safe-area-inset-bottom,0px));font-size:13px;color:var(--mute);display:flex;align-items:center;justify-content:center;gap:8px}
+.status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--leaf)}
+.status b{color:var(--ok)}
+.msg{color:var(--bad);font-size:14px;margin:0}
+.done{padding:48px 0;text-align:left}
+.done h2{font-family:var(--serif);font-weight:400;font-size:34px;margin:0 0 10px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media (max-width:900px){
+ .split{grid-template-columns:1fr}
+ .hero{position:relative;top:auto;height:auto;padding:40px 24px 28px}
+ .hero svg{width:220px;right:-30px;bottom:-30px;opacity:.7}
+ .panel{border-left:0;border-top:1px solid var(--line);padding:32px 20px 120px}
+}
+@media (max-width:480px){.scale{gap:3px}.scale label{padding:10px 0;font-size:14px}.row{flex-direction:column}.mic{align-self:flex-start}h1{font-size:30px}}
+</style>
+</head>
+<body>
+<div class="top"><div class="brand">Programa <b>Saturno</b></div><span>Polar · Ciclo 2026</span></div>
+<div class="split">
+<aside class="hero"><div class="hero-in">
+<p class="eyebrow">Polar · Ciclo 2026</p>
+<h2>Lo que aprendimos en el <em>ciclo</em></h2>
+<p>Cuéntanos qué funcionó y qué no en cada fase. Con tus respuestas preparamos la sesión de aprendizajes del programa.</p>
+</div>
+<svg viewBox="0 0 300 520" fill="currentColor" aria-hidden="true"><path d="M146 520V120h8v400z"/><path d="M150 130c-24-30-26-62-8-92 22 26 22 60 8 92z"/><path d="M150 130c24-30 26-62 8-92-22 26-22 60-8 92z"/><path d="M148 300c-60-20-96-56-102-110 56 14 96 50 102 110z"/><path d="M152 260c58-22 92-60 96-112-54 16-92 52-96 112z"/><path d="M148 440c-70-14-110-50-120-112 66 10 112 48 120 112z"/><path d="M152 400c66-18 106-56 112-116-62 14-106 52-112 116z"/></svg>
+</aside>
+<div class="panel">
+<main id="app">
+<header>
+<p class="eyebrow g">Tus respuestas</p>
+<h1>Aprendizajes del ciclo</h1>
+<p class="lead">Son 7 preguntas y toman menos de 5 minutos. Lo que escribes se guarda solo: puedes cerrar la página y seguir después desde el mismo dispositivo.</p>
+</header>
+
+<section class="q" data-k="nombre"><h2>Tu nombre <span class="req">*</span></h2>
+<input type="text" id="nombre" autocomplete="name" placeholder="Nombre y apellido"></section>
+
+<section class="q" data-k="area"><h2>1. ¿En qué área trabajas? <span class="req">*</span></h2>
+<select id="area"><option value="">Elige una…</option><option value="administrativo">Administrativo</option><option value="operativo">Operativo</option><option value="procesos">Procesos</option><option value="conocimiento">Conocimiento</option></select></section>
+
+<section class="q" id="s-nps" hidden><h2>2. ¿Recomendarías a otros proyectos los procesos que ejecutaste en cada fase de este ciclo? <span class="req">*</span></h2>
+<p class="hint">Califica cada fase de 0 a 10. 10 es la mejor puntuación (sí lo recomendaría) y 0 la peor (no lo recomendaría). De 9 a 10 es una buena puntuación; de 0 a 6 es mala.</p>
+<div id="nps"></div></section>
+
+<section class="q" id="s-bien" hidden data-k="bien"><h2>3. ¿Cuáles 3 procesos funcionaron mejor? <span class="req">*</span></h2>
+<p class="hint">Elige hasta 3. Están ordenados por fase.</p>
+<div id="l-bien"></div>
+<div class="sub"><span class="lab">¿Por qué funcionaron bien? (una línea) <span class="req">*</span></span><div class="row"><textarea id="porque_bien" data-k="porque_bien"></textarea></div></div></section>
+
+<section class="q" id="s-mal" hidden data-k="mal"><h2>4. ¿Cuáles 3 procesos tuvieron más problemas? <span class="req">*</span></h2>
+<p class="hint">Elige hasta 3. Están ordenados por fase.</p>
+<div id="l-mal"></div>
+<div class="sub"><span class="lab">¿Qué pasó? (una línea) <span class="req">*</span></span><div class="row"><textarea id="porque_mal" data-k="porque_mal"></textarea></div></div></section>
+
+<section class="q" id="s-reto" hidden><h2>5. Mayor reto del ciclo <span class="req">*</span></h2>
+<p class="hint">Cuéntanos el reto que más te marcó y cómo lo resolviste.</p>
+<div class="sub"><span class="lab">¿Cuál fue el reto?</span><div class="row"><textarea id="reto" data-k="reto"></textarea></div></div>
+<div class="sub"><label for="reto_fase">¿En qué fase ocurrió?</label><select id="reto_fase"><option value="">Elige una…</option><option>Planificación</option><option>Siembra</option><option>Cosecha</option></select></div>
+<div class="sub"><span class="lab">¿Cómo lo resolviste?</span><p class="hint">Si no lo resolviste, cuéntanos qué crees que podríamos hacer para mejorarlo el próximo año.</p><div class="row"><textarea id="reto_solucion" data-k="reto_solucion"></textarea></div></div></section>
+
+<section class="q" id="s-distinto" hidden><h2>6. Si arrancáramos el ciclo de nuevo, ¿qué harías distinto? <span class="req">*</span></h2>
+<div class="row"><textarea id="distinto" data-k="distinto"></textarea></div></section>
+
+<section class="q" id="s-reconocer" hidden><h2>7. ¿A quién reconocerías y por qué? <span class="req">*</span></h2>
+<p class="hint">Piensa en alguien cuyo aporte te ayudó a ti y al equipo este ciclo. Escribe su nombre y qué hizo. Solo se nombra a esta persona.</p>
+<div class="row"><textarea id="reconocer" data-k="reconocer"></textarea></div></section>
+
+<section class="q" id="s-op" hidden><h2>Solo equipo operativo</h2>
+<div class="sub"><span class="lab">¿Qué es el programa Saturno en tus propias palabras? <span class="req">*</span></span><div class="row"><textarea id="op_programa" data-k="op_programa"></textarea></div></div>
+<div class="sub"><label for="op_rol">¿Cuál es tu rol? <span class="req">*</span></label><input type="text" id="op_rol"></div></section>
+
+<p class="msg" id="msg" role="alert"></p>
+<button class="send" id="send" type="button" hidden>Enviar respuestas</button>
+</main>
+</div>
+</div>
+<div class="status" id="status" aria-live="polite">Aún no hay nada que guardar.</div>
+
+<script>
+/* ===== Configuración ===== */
+// Pega aquí la URL de la aplicación web de Apps Script (termina en /exec). Ver INSTRUCCIONES.txt
+var ENDPOINT = '';
+var DRAFT_KEY = 'saturno_borrador_v1';
+
+/* ===== Datos del cronograma ===== */
+var PROCESOS = {"administrativo": ["Planificación · Dimensionamiento y Metas de Negocio Agrícola", "Planificación · Negociación Bancaria", "Planificación · Oferta Proveedores", "Planificación · Compra y Asignación de Activos", "Planificación · Recolección de Documentación para Créditos", "Planificación · Corrida de Plan de Negocio y P&L por Agricultor", "Planificación · Entrega de Documentos Legales", "Planificación · Negociación y Cierre con Proveedores", "Ejecución · Monitoreo de P&L (rutina)", "Ejecución · Convenio con el Agricultor", "Ejecución · Liquidación de Crédito", "Ejecución · Actualización de Documentos - Movimientos de Maiz", "Ejecución · Definición de Mecanismo de Recaudo de Crédito en Cosecha", "Ejecución · Logística Interna de Arrime", "Cierre · Cierre de Proveedores", "Cierre · Cierre por Agricultor", "Cierre · Aprendizajes Proyecto Integral", "Cierre · Cierre Polar"], "procesos": ["Planificación · Captación de Productores", "Planificación · Acuerdo de Especificación con Laboratorio", "Planificación · Planificación Operativa Agrícola", "Planificación · Análisis de suelo en laboratorio UCV", "Planificación · Propuesta de Plan Agronómico", "Planificación · Mesas Técnicas (Agricultor)", "Planificación · Mesas Técnicas (Plan Agrícola)", "Ejecución · Mesas Técnicas del Ciclo (rutina semanal) (rutina)"], "conocimiento": ["Planificación · Formaciones", "Planificación · Planificación I+D", "Ejecución · Comunicación con el Productor (rutina)", "Ejecución · Evento Sinergia I", "Ejecución · Preparación Siembra (maquinaria, insumos, gente)", "Ejecución · Siembra RDOE", "Cierre · Cosecha RDOE", "Cierre · Cierre RDOE - Aprendizajes y Recomendaciones", "Cierre · Evento Sinergia II", "Cierre · Reconocimiento a la Excelencia Técnica"], "operativo": ["Planificación · Levantamiento de polígono y delimitación de lotes", "Planificación · Plan de muestreo de suelo y toma de muestra en campo", "Siembra · Auditoría Transversal del Ciclo (rutina)", "Siembra · Descompactación, Nivelación y Drenaje", "Siembra · Encalado", "Siembra · Asignación de Insumos", "Siembra · Suministro de Insumos", "Siembra · Cierre de Inventario - Fase 1 (post-siembra)", "Siembra · Siembra", "Siembra · Análisis Foliar de Verificación", "Siembra · Control de Cultivo/Fumigación", "Siembra · Monitoreo", "Siembra · Reabono de Cultivo", "Cosecha · Cierre de Inventario - Fase 2 (antesala de cosecha)", "Cosecha · Estimación de Cosecha", "Cosecha · Cosecha", "Cosecha · Preparación Cosecha (maquinaria, insumos, gente)"]};
+var PROCESOS_FASE = {"administrativo": {"Planificación": ["Dimensionamiento y Metas de Negocio Agrícola", "Negociación Bancaria", "Oferta Proveedores", "Compra y Asignación de Activos", "Recolección de Documentación para Créditos", "Corrida de Plan de Negocio y P&L por Agricultor", "Entrega de Documentos Legales", "Negociación y Cierre con Proveedores"], "Siembra": ["Monitoreo de P&L", "Convenio con el Agricultor", "Liquidación de Crédito"], "Cosecha": ["Actualización de Documentos - Movimientos de Maiz", "Definición de Mecanismo de Recaudo de Crédito en Cosecha", "Cierre de Proveedores", "Logística Interna de Arrime", "Cierre por Agricultor", "Aprendizajes Proyecto Integral", "Cierre Polar"]}, "operativo": {"Planificación": ["Levantamiento de polígono y delimitación de lotes", "Plan de muestreo de suelo y toma de muestra en campo"], "Siembra": ["Auditoría Transversal del Ciclo", "Descompactación, Nivelación y Drenaje", "Encalado", "Asignación de Insumos", "Suministro de Insumos", "Cierre de Inventario - Fase 1 (post-siembra)", "Siembra", "Análisis Foliar de Verificación", "Control de Cultivo/Fumigación", "Monitoreo", "Reabono de Cultivo"], "Cosecha": ["Cierre de Inventario - Fase 2 (antesala de cosecha)", "Estimación de Cosecha", "Cosecha", "Preparación Cosecha (maquinaria, insumos, gente)"]}, "procesos": {"Planificación": ["Captación de Productores", "Acuerdo de Especificación con Laboratorio", "Planificación Operativa Agrícola", "Análisis de suelo en laboratorio UCV", "Propuesta de Plan Agronómico", "Mesas Técnicas (Agricultor)", "Mesas Técnicas (Plan Agrícola)"], "Siembra": ["Mesas Técnicas del Ciclo"], "Cosecha": []}, "conocimiento": {"Planificación": ["Formaciones", "Planificación I+D"], "Siembra": ["Comunicación con el Productor", "Evento Sinergia I", "Preparación Siembra (maquinaria, insumos, gente)", "Siembra RDOE"], "Cosecha": ["Cosecha RDOE", "Cierre RDOE - Aprendizajes y Recomendaciones", "Evento Sinergia II", "Reconocimiento a la Excelencia Técnica"]}};
+var FASES = ['Planificación', 'Siembra', 'Cosecha'];
+
+/* ===== Estado ===== */
+var state = {id: '', estado: 'borrador'};
+var NPS_KEYS = {'Planificación': 'nps_planificacion', 'Siembra': 'nps_siembra', 'Cosecha': 'nps_cosecha'};
+var $ = function (id) { return document.getElementById(id); };
+
+function uuid() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+
+function load() {
+  try { var s = localStorage.getItem(DRAFT_KEY); if (s) state = JSON.parse(s); } catch (e) {}
+  if (!state.id) state.id = uuid();
+}
+function persistLocal() { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(state)); } catch (e) {} }
+
+/* ===== Guardado automático ===== */
+var timer = null, pendiente = false;
+function setStatus(html) { $('status').innerHTML = html; }
+function touch() {
+  persistLocal();
+  pendiente = true;
+  setStatus('Guardando…');
+  clearTimeout(timer);
+  timer = setTimeout(enviar, 1500);
+}
+function enviar(final) {
+  if (!ENDPOINT) { setStatus('Guardado en este dispositivo. <i>(Falta conectar la hoja de respuestas.)</i>'); return Promise.resolve(false); }
+  state.estado = final === true ? 'completa' : (state.estado === 'completa' ? 'completa' : 'borrador');
+  return fetch(ENDPOINT, {method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(state)})
+    .then(function () { pendiente = false; setStatus('<b>Guardado</b> ' + new Date().toLocaleTimeString('es', {hour: '2-digit', minute: '2-digit'})); return true; })
+    .catch(function () { setStatus('Guardado en este dispositivo. Se enviará cuando vuelva la conexión.'); return false; });
+}
+window.addEventListener('online', function () { if (pendiente) enviar(); });
+window.addEventListener('pagehide', function () { if (pendiente) persistLocal(); });
+
+/* ===== Construcción de la página ===== */
+function areaActual() { return $('area').value; }
+
+function renderNps() {
+  var a = areaActual(), box = $('nps');
+  box.innerHTML = '';
+  FASES.forEach(function (fase) {
+    var lista = PROCESOS_FASE[a][fase], k = NPS_KEYS[fase];
+    var ayuda = lista.length ? 'Procesos de tu área en esta fase: ' + lista.join('; ') + '.' : 'Tu área no tiene procesos propios en esta fase. Califica los procesos del programa que viste en ella.';
+    var d = document.createElement('div');
+    d.className = 'sub'; d.dataset.k = k; d.style.marginTop = '10px';
+    d.innerHTML = '<span class="lab">¿Recomendarías a otros proyectos el proceso de ' + fase.toLowerCase() + ' que ejecutaste este ciclo?</span><p class="procs"></p><div class="scale" role="radiogroup"></div><div class="ends"><span>0 = no lo recomendaría</span><span>10 = sí lo recomendaría</span></div>';
+    d.querySelector('.procs').textContent = ayuda;
+    var sc = d.querySelector('.scale');
+    for (var i = 0; i <= 10; i++) {
+      var l = document.createElement('label');
+      l.innerHTML = '<input type="radio" name="' + k + '" value="' + i + '">' + i;
+      if (String(state[k]) === String(i)) l.querySelector('input').checked = true;
+      sc.appendChild(l);
+    }
+    sc.addEventListener('change', function (e) { state[k] = e.target.value; touch(); });
+    box.appendChild(d);
+  });
+}
+
+function renderLista(key, cont) {
+  var a = areaActual(), box = $(cont);
+  box.innerHTML = '';
+  var lista = PROCESOS[a] || [], grupo = '', sel = state[key] || [];
+  var wrap = document.createElement('div'); wrap.className = 'opts';
+  lista.forEach(function (lab) {
+    var p = lab.split(' · '), fase = p[0], nombre = p.slice(1).join(' · ');
+    if (fase !== grupo) { grupo = fase; var g = document.createElement('div'); g.className = 'grp'; g.textContent = fase; wrap.appendChild(g); }
+    var l = document.createElement('label'); l.className = 'opt';
+    var i = document.createElement('input'); i.type = 'checkbox'; i.value = lab; i.checked = sel.indexOf(lab) >= 0;
+    var s = document.createElement('span'); s.textContent = nombre;
+    l.appendChild(i); l.appendChild(s); wrap.appendChild(l);
+  });
+  wrap.addEventListener('change', function () {
+    var marcados = [].slice.call(wrap.querySelectorAll('input:checked')).map(function (x) { return x.value; });
+    state[key] = marcados;
+    limitar(wrap, marcados.length);
+    touch();
+  });
+  limitar(wrap, sel.length);
+  box.appendChild(wrap);
+}
+function limitar(wrap, n) {
+  [].forEach.call(wrap.querySelectorAll('.opt'), function (l) {
+    var i = l.querySelector('input'), off = n >= 3 && !i.checked;
+    i.disabled = off; l.classList.toggle('off', off);
+  });
+}
+
+function actualizarArea() {
+  var a = areaActual();
+  state.area = a;
+  ['s-nps', 's-bien', 's-mal', 's-reto', 's-distinto', 's-reconocer'].forEach(function (id) { $(id).hidden = !a; });
+  $('s-op').hidden = a !== 'operativo';
+  $('send').hidden = !a;
+  if (a) { renderNps(); renderLista('bien', 'l-bien'); renderLista('mal', 'l-mal'); }
+}
+
+/* ===== Campos de texto ===== */
+var TEXTOS = ['nombre', 'porque_bien', 'porque_mal', 'reto', 'reto_fase', 'reto_solucion', 'distinto', 'reconocer', 'op_programa', 'op_rol'];
+function enlazarCampos() {
+  TEXTOS.forEach(function (k) {
+    var el = $(k);
+    el.value = state[k] || '';
+    el.addEventListener('input', function () { state[k] = el.value; touch(); });
+    el.addEventListener('change', function () { state[k] = el.value; touch(); });
+  });
+  $('area').value = state.area || '';
+  $('area').addEventListener('change', function () { actualizarArea(); touch(); });
+}
+
+/* ===== Dictado por voz (si el navegador lo permite) ===== */
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+var MIC = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>';
+function agregarDictado() {
+  var activo = null;
+  [].forEach.call(document.querySelectorAll('.row textarea'), function (ta) {
+    if (!SR) return;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'mic';
+    b.innerHTML = MIC + '<span>Dictar</span>';
+    b.addEventListener('click', function () {
+      if (activo) { activo.rec.stop(); if (activo.btn === b) return; }
+      var rec = new SR(); rec.lang = 'es-VE'; rec.continuous = true; rec.interimResults = false;
+      rec.onresult = function (e) {
+        var t = '';
+        for (var i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) t += e.results[i][0].transcript;
+        if (t) { ta.value = (ta.value ? ta.value.replace(/\s+$/, '') + ' ' : '') + t.trim(); ta.dispatchEvent(new Event('input')); }
+      };
+      rec.onend = function () { b.classList.remove('on'); b.querySelector('span').textContent = 'Dictar'; if (activo && activo.btn === b) activo = null; };
+      rec.onerror = function () { rec.stop(); };
+      activo = {rec: rec, btn: b};
+      b.classList.add('on'); b.querySelector('span').textContent = 'Detener';
+      try { rec.start(); } catch (err) {}
+    });
+    ta.parentNode.appendChild(b);
+  });
+  if (!SR) {
+    var h = document.createElement('p'); h.className = 'hint';
+    h.textContent = 'Para hablar en lugar de escribir, usa el botón del micrófono de tu teclado.';
+    document.querySelector('header').appendChild(h);
+  }
+}
+
+/* ===== Envío final ===== */
+function faltantes() {
+  var a = areaActual(), f = [];
+  function vacio(k) { return !(state[k] && String(state[k]).trim()); }
+  if (vacio('nombre')) f.push('nombre');
+  if (!a) f.push('area');
+  if (a) {
+    FASES.forEach(function (x) { if (state[NPS_KEYS[x]] === undefined || state[NPS_KEYS[x]] === '') f.push(NPS_KEYS[x]); });
+    if (!(state.bien || []).length) f.push('bien');
+    if (vacio('porque_bien')) f.push('porque_bien');
+    if (!(state.mal || []).length) f.push('mal');
+    if (vacio('porque_mal')) f.push('porque_mal');
+    ['reto', 'reto_fase', 'reto_solucion', 'distinto', 'reconocer'].forEach(function (k) { if (vacio(k)) f.push(k); });
+    if (a === 'operativo') ['op_programa', 'op_rol'].forEach(function (k) { if (vacio(k)) f.push(k); });
+  }
+  return f;
+}
+function marcar(f) {
+  [].forEach.call(document.querySelectorAll('.q'), function (s) { s.classList.remove('err'); });
+  var primero = null;
+  f.forEach(function (k) {
+    var el = document.querySelector('[data-k="' + k + '"]') || $(k);
+    var s = el && el.closest('.q');
+    if (s) { s.classList.add('err'); if (!primero) primero = s; }
+  });
+  if (primero) primero.scrollIntoView({behavior: 'smooth', block: 'center'});
+}
+$('send').addEventListener('click', function () {
+  var f = faltantes();
+  if (f.length) { marcar(f); $('msg').textContent = 'Faltan respuestas en las preguntas marcadas en rojo. Todas son obligatorias.'; return; }
+  $('msg').textContent = '';
+  var b = $('send'); b.disabled = true; b.textContent = 'Enviando…';
+  if (!ENDPOINT) { b.disabled = false; b.textContent = 'Enviar respuestas'; $('msg').textContent = 'Esta página aún no está conectada a la hoja de respuestas. Tus respuestas siguen guardadas en este dispositivo.'; return; }
+  enviar(true).then(function (ok) {
+    if (!ok) { b.disabled = false; b.textContent = 'Enviar respuestas'; $('msg').textContent = 'No se pudo enviar. Tus respuestas están guardadas en este dispositivo; inténtalo de nuevo con conexión.'; return; }
+    try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+    $('app').innerHTML = '<div class="done"><h2>Gracias, ' + (state.nombre || '').replace(/[<>&]/g, '') + '</h2><p>Recibimos tus respuestas. Nos vemos en la sesión de aprendizajes.</p></div>';
+    setStatus('<b>Enviado</b>');
+  });
+});
+
+/* ===== Inicio ===== */
+load();
+enlazarCampos();
+agregarDictado();
+actualizarArea();
+if (state.area || state.nombre) setStatus('Recuperamos tu borrador. Puedes seguir donde lo dejaste.');
+</script>
+</body>
+</html>
