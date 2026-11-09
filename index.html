@@ -314,6 +314,8 @@ function entrar(){ var k=$('admKey').value.trim(); if(!k) return; $('admMsg').te
 }
 $('admGo').addEventListener('click',entrar); $('admX').addEventListener('click',cerrar);
 $('admKey').addEventListener('keydown',function(e){if(e.key==='Enter')entrar()});
+var cl=0, clT=null;
+document.querySelector('.brand').addEventListener('click',function(){ cl++; clearTimeout(clT); clT=setTimeout(function(){cl=0},2000); if(cl>=5){ cl=0; location.hash='#panel-saturno'; } });
 window.addEventListener('hashchange',mostrar); mostrar();
 })();
 </script>
